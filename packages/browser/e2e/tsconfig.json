@@ -1,0 +1,12 @@
+{
+  "extends": "../../../tooling/tsconfig/base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    // page.evaluate() callbacks execute inside the browser page's own realm (not this file's
+    // Node realm), so they reference DOM globals like `window` -- include "dom" purely for
+    // type-checking those callback bodies, it has no effect on how Playwright actually runs.
+    "lib": ["ES2020", "DOM"],
+    "noEmit": true
+  },
+  "include": ["**/*.ts"]
+}

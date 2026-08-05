@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="../../dist/index.umd.js"></script>
+  </head>
+  <body>
+    <button id="trigger-onerror">onerror</button>
+    <script>
+      window.triggerUnhandledError = function () {
+        setTimeout(() => {
+          throw new Error('e2e uncaught error')
+        }, 0)
+      }
+      window.triggerUnhandledRejection = function () {
+        Promise.reject(new Error('e2e unhandled rejection'))
+      }
+      window.triggerConsoleError = function () {
+        console.error(new Error('e2e console error'))
+      }
+      window.triggerManualCapture = function () {
+        GetMonitor.captureException(new Error('e2e manual capture'))
+      }
+    </script>
+  </body>
+</html>

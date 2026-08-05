@@ -1,0 +1,32 @@
+{
+  "name": "@getmonitor/browser",
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "lint": "tsc --noEmit && tsc --noEmit -p e2e"
+  },
+  "dependencies": {
+    "@getmonitor/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.0",
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/node": "^20.14.0",
+    "jsdom": "^25.0.0",
+    "rollup": "^4.24.0",
+    "tslib": "^2.6.0",
+    "typescript": "^5.8.2",
+    "vitest": "^2.1.0"
+  }
+}
