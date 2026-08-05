@@ -71,4 +71,4 @@ There is currently no CI pipeline configured for this repo (no `.github/workflow
 
 ## License
 
-MIT
+Apache License 2.0
