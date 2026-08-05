@@ -8,3 +8,4 @@ coverage/
 .rollup.cache/
 test-results/
 playwright-report/
+docs/superpowers/
