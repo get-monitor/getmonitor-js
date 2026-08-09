@@ -1,0 +1,31 @@
+{
+  "name": "@getmonitor/cli",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "getmonitor": "dist/bin.js"
+  },
+  "files": ["dist"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "rollup -c && chmod +x dist/bin.js",
+    "test": "vitest run --exclude 'e2e/**'",
+    "test:e2e": "vitest run e2e/processSourceMaps.spec.ts",
+    "lint": "tsc --noEmit && tsc --noEmit -p e2e"
+  },
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/node": "^20.14.0",
+    "esbuild": "^0.24.0",
+    "rollup": "^4.24.0",
+    "tslib": "^2.6.0",
+    "typescript": "^5.8.2",
+    "vitest": "^2.1.0"
+  }
+}
