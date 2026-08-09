@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, afterEach } from 'vitest'
 import { parseStackTrace } from '../stackTraceParser'
 
 describe('parseStackTrace', () => {
@@ -57,5 +57,36 @@ describe('parseStackTrace', () => {
 
   it('returns an empty array for an undefined stack', () => {
     expect(parseStackTrace(undefined)).toEqual([])
+  })
+})
+
+describe('parseStackTrace debug ID enrichment', () => {
+  afterEach(() => {
+    delete (globalThis as { __getmonitorDebugIds?: unknown }).__getmonitorDebugIds
+  })
+
+  it('attaches debugId to a frame when the registry has a match for its filename', () => {
+    ;(globalThis as { __getmonitorDebugIds?: Record<string, string> }).__getmonitorDebugIds = {
+      'https://app.example.com/checkout.js': 'debug-abc',
+    }
+    const stack = [
+      'TypeError: x',
+      '    at submitOrder (https://app.example.com/checkout.js:42:9)',
+    ].join('\n')
+
+    const frames = parseStackTrace(stack)
+
+    expect(frames[0].debugId).toBe('debug-abc')
+  })
+
+  it('leaves debugId unset when there is no registry match', () => {
+    const stack = [
+      'TypeError: x',
+      '    at submitOrder (https://app.example.com/checkout.js:42:9)',
+    ].join('\n')
+
+    const frames = parseStackTrace(stack)
+
+    expect(frames[0].debugId).toBeUndefined()
   })
 })

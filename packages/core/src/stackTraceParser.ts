@@ -1,4 +1,5 @@
 import { StackFrame } from './types'
+import { lookupDebugId } from './debugIdRegistry'
 
 // Known gaps (not covered by current tests, not blocking for v1):
 // - Nested-paren eval frames (V8's `eval (eval at <anonymous> (...), ...)` shape) will
@@ -21,7 +22,11 @@ export function parseStackTrace(stack: string | undefined): StackFrame[] {
 
   for (const line of lines) {
     const frame = parseChromeLine(line) ?? parseGeckoLine(line)
-    if (frame) frames.push(frame)
+    if (frame) {
+      const debugId = lookupDebugId(frame.filename)
+      if (debugId) frame.debugId = debugId
+      frames.push(frame)
+    }
   }
 
   return frames

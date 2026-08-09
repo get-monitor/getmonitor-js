@@ -12,6 +12,9 @@ export interface StackFrame {
   lineno: number
   colno: number
   inApp: boolean
+  // Populated by parseStackTrace when @getmonitor/cli's build-time injection registered a
+  // debug ID for this frame's filename. See debugIdRegistry.ts.
+  debugId?: string
 }
 
 export interface ExceptionValue {
