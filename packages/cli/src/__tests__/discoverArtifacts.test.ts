@@ -41,12 +41,32 @@ describe('discoverArtifacts', () => {
     expect(artifacts).toEqual([{ jsPath: join(nested, 'chunk1.js'), mapPath: join(nested, 'chunk1.js.map') }])
   })
 
-  it('ignores non-.js files', () => {
+  it('ignores non-JS files', () => {
     writeFileSync(join(dir, 'styles.css'), 'body {}')
     writeFileSync(join(dir, 'main.js'), 'console.log(1)')
     writeFileSync(join(dir, 'main.js.map'), '{}')
 
     expect(discoverArtifacts(dir)).toHaveLength(1)
+  })
+
+  it('finds .mjs and .cjs files with sibling .map files', () => {
+    // Nitro's node-server preset (used by @getmonitor/nuxt) emits `.output/server/**/*.mjs`
+    // unconditionally — verified against a real `nuxt build` (Task 13), where a `.js`-only
+    // match left every server chunk's map undiscovered and unstripped.
+    writeFileSync(join(dir, 'server.mjs'), 'console.log(1)')
+    writeFileSync(join(dir, 'server.mjs.map'), '{}')
+    writeFileSync(join(dir, 'legacy.cjs'), 'console.log(2)')
+    writeFileSync(join(dir, 'legacy.cjs.map'), '{}')
+
+    const artifacts = discoverArtifacts(dir)
+
+    expect(artifacts).toEqual(
+      expect.arrayContaining([
+        { jsPath: join(dir, 'server.mjs'), mapPath: join(dir, 'server.mjs.map') },
+        { jsPath: join(dir, 'legacy.cjs'), mapPath: join(dir, 'legacy.cjs.map') },
+      ]),
+    )
+    expect(artifacts).toHaveLength(2)
   })
 
   it('resolves the map via a custom sourceMappingURL comment, even with a different basename', () => {

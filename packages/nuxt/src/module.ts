@@ -23,11 +23,18 @@ const getMonitorModule: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptio
   setup(options, nuxt) {
     nuxt.options.sourcemap = { client: true, server: true }
 
-    // 'close' fires once nuxi's build process has finished writing `.output/` — verified
-    // against a real `nuxt build` in this package's e2e test (Task 13). If that test shows
-    // `.output/` isn't fully written yet at this point, switch to Nitro's own
-    // 'nitro:build:public-assets' hook, exposed via `nuxt.hooks.hook('close', ...)`'s sibling
-    // `nitro:init` handler — see Nitro's hook docs.
+    // 'close' fires once nuxi's build process has finished writing `.output/` — this is now
+    // confirmed, not assumed. Verified against a real `nuxt build` (Task 13's e2e test,
+    // packages/nuxt/e2e/build.spec.ts): both `.output/public/**` (client assets) and
+    // `.output/server/**` (Nitro's node-server preset output, including its `*.mjs` chunks)
+    // exist on disk with their full byte content by the time this hook body runs, and
+    // processSourceMaps successfully uploads and strips every source map under both —
+    // reproduced across multiple consecutive runs with no intermittent misses. (A real, separate
+    // bug surfaced along the way and briefly looked like a "close fired too early" symptom:
+    // discoverArtifacts originally matched only `*.js`, so Nitro's `*.mjs` server chunks were
+    // silently skipped. That went away entirely once discoverArtifacts also matched
+    // `.mjs`/`.cjs` — see packages/cli/src/discoverArtifacts.ts — proving it was never a
+    // hook-timing issue.) No need for Nitro's own hooks here.
     nuxt.hook('close', async () => {
       if (nuxt.options.dev || !options.apiHost) return
 
