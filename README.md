@@ -16,10 +16,9 @@ This is a pnpm + Turborepo monorepo. Every package is published independently un
 | [`@getmonitor/cli`](packages/cli) | Framework-agnostic source map upload tool: injects debug IDs, uploads to GetMonitor, and strips maps from the public build output. |
 | [`@getmonitor/nextjs-config`](packages/nextjs-config) | Next.js config wrapper — enables source maps and runs `@getmonitor/cli`'s upload automatically as part of `next build`. |
 | [`@getmonitor/nuxt`](packages/nuxt) | Nuxt module — the same, for `nuxt build`. |
+| [`@getmonitor/react`](packages/react) | React error boundary (`<GetMonitorErrorBoundary>`) that reports caught render errors via `@getmonitor/browser`. |
 
-**Current scope:** Phase 1 (capture engine — automatic + manual exception capture, breadcrumbs, filtering, rate limiting, delivery) and Phase 2 (source maps — debug ID injection, upload, stripping; see `@getmonitor/cli`'s README for the upload contract). Deferred:
-
-- **Phase 3 — React:** `@getmonitor/react` (`<GetMonitorErrorBoundary>`).
+**Current scope:** Phase 1 (capture engine — automatic + manual exception capture, breadcrumbs, filtering, rate limiting, delivery), Phase 2 (source maps — debug ID injection, upload, stripping; see `@getmonitor/cli`'s README for the upload contract), and Phase 3 (`@getmonitor/react`'s `<GetMonitorErrorBoundary>`).
 
 ## Quickstart
 
