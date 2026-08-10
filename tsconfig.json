@@ -3,6 +3,7 @@
   "references": [
     { "path": "packages/core" },
     { "path": "packages/browser" },
+    { "path": "packages/react" },
     { "path": "packages/node" },
     { "path": "packages/cli" },
     { "path": "packages/nextjs-config" },

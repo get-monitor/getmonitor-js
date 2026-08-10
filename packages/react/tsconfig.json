@@ -1,0 +1,13 @@
+{
+  "extends": "../../tooling/tsconfig/base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "lib": ["ES2020", "ES2021", "ES2022.Error", "DOM"],
+    "jsx": "react-jsx",
+    "composite": true
+  },
+  "include": ["src"],
+  "exclude": ["src/__tests__"],
+  "references": [{ "path": "../browser" }, { "path": "../core" }]
+}
