@@ -13,10 +13,12 @@ This is a pnpm + Turborepo monorepo. Every package is published independently un
 | [`@getmonitor/core`](packages/core) | Shared internals: types, stack trace parser, rate limiter, breadcrumb buffer, fingerprinting, filtering, error normalization, HTTP transport. Not typically installed directly. |
 | [`@getmonitor/browser`](packages/browser) | Browser SDK. Captures `window.onerror`, unhandled promise rejections, and `console.error`; ships as ESM, CJS, and a UMD `<script>` build. |
 | [`@getmonitor/node`](packages/node) | Node SDK. Captures `uncaughtException`/`unhandledRejection`, plus an Express error-handling middleware. |
+| [`@getmonitor/cli`](packages/cli) | Framework-agnostic source map upload tool: injects debug IDs, uploads to GetMonitor, and strips maps from the public build output. |
+| [`@getmonitor/nextjs-config`](packages/nextjs-config) | Next.js config wrapper — enables source maps and runs `@getmonitor/cli`'s upload automatically as part of `next build`. |
+| [`@getmonitor/nuxt`](packages/nuxt) | Nuxt module — the same, for `nuxt build`. |
 
-**Current scope (Phase 1):** the core capture engine above — automatic + manual exception capture, breadcrumbs, filtering, rate limiting, delivery. Deferred to later phases:
+**Current scope:** Phase 1 (capture engine — automatic + manual exception capture, breadcrumbs, filtering, rate limiting, delivery) and Phase 2 (source maps — debug ID injection, upload, stripping; see `@getmonitor/cli`'s README for the upload contract). Deferred:
 
-- **Phase 2 — Source maps:** `@getmonitor/cli`, `@getmonitor/nextjs-config`, `@getmonitor/nuxt`.
 - **Phase 3 — React:** `@getmonitor/react` (`<GetMonitorErrorBoundary>`).
 
 ## Quickstart
