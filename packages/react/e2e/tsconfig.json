@@ -1,0 +1,9 @@
+{
+  "extends": "../../../tooling/tsconfig/base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "lib": ["ES2020", "DOM"],
+    "noEmit": true
+  },
+  "include": ["**/*.ts"]
+}
