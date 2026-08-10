@@ -125,4 +125,19 @@ describe('GetMonitor (browser)', () => {
 
     await expect(GetMonitor.captureException(new Error('boom'))).resolves.toBeUndefined()
   })
+
+  it('captureAutomatic forwards mechanism, handled, and extra capture options (e.g. tags)', async () => {
+    const fetchSpy = vi.fn().mockResolvedValue({ ok: true, status: 200 })
+    vi.stubGlobal('fetch', fetchSpy)
+
+    GetMonitor.init('gm_test', { apiHost: 'https://ingest.test' })
+    await GetMonitor.captureAutomatic(new Error('boom'), 'react_error_boundary', true, {
+      tags: { componentStack: 'at App' },
+    })
+
+    const body = JSON.parse(fetchSpy.mock.calls[0][1].body)
+    expect(body.mechanism).toBe('react_error_boundary')
+    expect(body.handled).toBe(true)
+    expect(body.tags).toEqual({ componentStack: 'at App' })
+  })
 })

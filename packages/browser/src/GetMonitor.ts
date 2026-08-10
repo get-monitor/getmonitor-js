@@ -74,9 +74,19 @@ class GetMonitorClient {
     return this.dispatch(error, extra, 'manual', true)
   }
 
-  /** @internal used by exceptionObserver — not part of the public API */
-  captureAutomatic(error: unknown, mechanism: ExceptionMechanism, handled: boolean): Promise<void> {
-    return this.dispatch(error, undefined, mechanism, handled)
+  /**
+   * Public entry point for building custom capture integrations on top of the browser SDK
+   * (e.g. `@getmonitor/react`'s error boundary). Unlike `captureException`, the caller
+   * supplies its own `mechanism` and `handled` classification instead of always reporting
+   * `'manual'`/`true`.
+   */
+  captureAutomatic(
+    error: unknown,
+    mechanism: ExceptionMechanism,
+    handled: boolean,
+    extra?: CaptureOptions
+  ): Promise<void> {
+    return this.dispatch(error, extra, mechanism, handled)
   }
 
   private dispatch(
