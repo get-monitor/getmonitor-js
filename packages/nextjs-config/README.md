@@ -18,7 +18,6 @@ module.exports = withGetMonitor(
     // ...your existing Next.js config
   },
   {
-    apiHost: 'https://ingest.getmonitor.com',
     authToken: process.env.GETMONITOR_AUTH_TOKEN,
     // release: '1.4.2', // optional — see @getmonitor/cli's README for auto-detection
   },
@@ -44,7 +43,8 @@ than shipping silently without maps uploaded.
 | --- | --- |
 | `withGetMonitor(nextConfig, options)` | `(NextConfig, GetMonitorNextOptions) => NextConfig` |
 
-`GetMonitorNextOptions` = `{ apiHost: string; authToken?: string; release?: string }`.
+`GetMonitorNextOptions` = `{ authToken?: string; release?: string }`. Uploads always go to the
+fixed GetMonitor ingest host — not customer-configurable.
 
 ## Development
 

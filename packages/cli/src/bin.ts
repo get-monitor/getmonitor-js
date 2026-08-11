@@ -3,7 +3,6 @@ import { processSourceMaps } from './processSourceMaps'
 
 interface ParsedArgs {
   directory: string
-  apiHost: string
   release?: string
   authToken?: string
 }
@@ -13,28 +12,22 @@ export function parseArgs(argv: string[]): ParsedArgs {
   const [command, subcommand, directory, ...rest] = argv
   if (command !== 'sourcemaps' || subcommand !== 'upload' || !directory) {
     throw new Error(
-      'Usage: getmonitor sourcemaps upload <directory> --api-host <url> [--release <release>] [--auth-token <token>]',
+      'Usage: getmonitor sourcemaps upload <directory> [--release <release>] [--auth-token <token>]',
     )
   }
 
   let release: string | undefined
   let authToken: string | undefined
-  let apiHost: string | undefined
 
   for (let i = 0; i < rest.length; i += 2) {
     const flag = rest[i]
     const value = rest[i + 1]
     if (flag === '--release') release = value
     else if (flag === '--auth-token') authToken = value
-    else if (flag === '--api-host') apiHost = value
     else throw new Error(`Unknown flag: ${flag}`)
   }
 
-  if (!apiHost) {
-    throw new Error('Usage: getmonitor sourcemaps upload <directory> --api-host <url> [...]')
-  }
-
-  return { directory, apiHost, release, authToken }
+  return { directory, release, authToken }
 }
 
 async function main(): Promise<void> {
@@ -44,7 +37,6 @@ async function main(): Promise<void> {
     directory: args.directory,
     release: args.release,
     authToken: args.authToken,
-    apiHost: args.apiHost,
   })
 
   console.log(`Uploaded ${result.uploaded.length} source map(s).`)

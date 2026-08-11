@@ -1,7 +1,23 @@
 import { describe, it, expect, vi } from 'vitest'
-import { uploadSourceMap } from '../uploadSourceMap'
+import { uploadSourceMap, DEFAULT_API_HOST } from '../uploadSourceMap'
 
 describe('uploadSourceMap', () => {
+  it('defaults to DEFAULT_API_HOST when no apiHost override is given', async () => {
+    const fetchImpl = vi.fn().mockResolvedValue({ ok: true, status: 200, statusText: 'OK' })
+
+    await uploadSourceMap({
+      authToken: 'secret-token',
+      release: '1.2.3',
+      debugId: 'debug-abc',
+      filename: 'static/main.js',
+      mapContent: '{"version":3}',
+      fetchImpl,
+    })
+
+    const [url] = fetchImpl.mock.calls[0]
+    expect(url).toBe(`${DEFAULT_API_HOST}/api/v1/sourcemaps`)
+  })
+
   it('posts release, debugId, filename, and the map content as multipart form data', async () => {
     const fetchImpl = vi.fn().mockResolvedValue({ ok: true, status: 200, statusText: 'OK' })
 

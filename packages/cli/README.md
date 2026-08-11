@@ -9,7 +9,8 @@ as part of a customer's build.
 For every `*.js` file with a resolvable source map under a directory, `processSourceMaps`:
 
 1. Generates a debug ID and injects it into both the JS file and its source map.
-2. Uploads the tagged source map to `{apiHost}/api/v1/sourcemaps`.
+2. Uploads the tagged source map to `https://ingest.getmonitor.io/api/v1/sourcemaps` — the
+   upload host is fixed and not customer-configurable.
 3. On a successful upload: deletes the `.map` file and strips the `//# sourceMappingURL=`
    comment from the JS file, so nothing readable ships publicly.
 4. On a failed upload: leaves both files untouched, so the artifact can be retried.
@@ -30,7 +31,6 @@ npm install --save-dev @getmonitor/cli
 
 ```bash
 getmonitor sourcemaps upload ./dist \
-  --api-host https://ingest.getmonitor.com \
   --release 1.4.2 \
   --auth-token $GETMONITOR_AUTH_TOKEN
 ```
@@ -50,7 +50,6 @@ import { processSourceMaps } from '@getmonitor/cli'
 
 const result = await processSourceMaps({
   directory: './dist',
-  apiHost: 'https://ingest.getmonitor.com',
   authToken: process.env.GETMONITOR_AUTH_TOKEN,
 })
 
@@ -66,7 +65,7 @@ build-finished hook — see those packages for the build-tool-integrated version
 | --- | --- |
 | `processSourceMaps(options)` | `(ProcessSourceMapsOptions) => Promise<ProcessSourceMapsResult>` |
 
-`ProcessSourceMapsOptions` = `{ directory: string; apiHost: string; release?: string; authToken?: string; fetchImpl?: typeof fetch }`
+`ProcessSourceMapsOptions` = `{ directory: string; release?: string; authToken?: string; fetchImpl?: typeof fetch }`
 (`fetchImpl` is a test/dependency-injection hook — most consumers won't need it).
 `ProcessSourceMapsResult` = `{ uploaded: string[]; failed: string[] }` — full on-disk paths of
 each processed artifact, split by outcome.

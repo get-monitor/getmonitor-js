@@ -4,9 +4,19 @@ import type { NuxtModule } from 'nuxt/schema'
 import { processSourceMaps } from '@getmonitor/cli'
 
 export interface ModuleOptions {
-  apiHost: string
   authToken?: string
   release?: string
+}
+
+/**
+ * @internal Test-only host override, intersected into the module's option type but
+ * deliberately not part of the exported `ModuleOptions` — see `@getmonitor/cli`'s
+ * `uploadSourceMap`'s `UploadSourceMapParams.apiHost`. The e2e suite writes this into a
+ * generated `nuxt.config.ts` to redirect delivery to its mock server; real Nuxt configs must
+ * never set it.
+ */
+interface InternalTestOverrides {
+  apiHost?: string
 }
 
 // Rollup's typescript plugin can't emit a portable `.d.ts` reference for defineNuxtModule's
@@ -15,7 +25,9 @@ export interface ModuleOptions {
 // specifier, which silently drops `dist/module.d.ts` from the build (TS2742) even though
 // `tsc --noEmit` reports no error. An explicit annotation, using the `nuxt/schema` subpath
 // export (reachable since `nuxt` is already a dependency), sidesteps the inference entirely.
-const getMonitorModule: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptions>({
+const getMonitorModule: NuxtModule<ModuleOptions & InternalTestOverrides> = defineNuxtModule<
+  ModuleOptions & InternalTestOverrides
+>({
   meta: {
     name: '@getmonitor/nuxt',
     configKey: 'getmonitor',
@@ -36,12 +48,17 @@ const getMonitorModule: NuxtModule<ModuleOptions> = defineNuxtModule<ModuleOptio
     // `.mjs`/`.cjs` — see packages/cli/src/discoverArtifacts.ts — proving it was never a
     // hook-timing issue.) No need for Nitro's own hooks here.
     nuxt.hook('close', async () => {
-      if (nuxt.options.dev || !options.apiHost) return
+      // No apiHost gate anymore (the ingest host is fixed) — gate on whether the module is
+      // actually configured instead, so installing it without an auth token stays a silent
+      // no-op rather than failing every build. processSourceMaps does this same env var
+      // fallback internally; it's duplicated here only for this early-return check.
+      const authToken = options.authToken ?? process.env.GETMONITOR_AUTH_TOKEN
+      if (nuxt.options.dev || !authToken) return
 
       const result = await processSourceMaps({
         directory: nuxt.options.rootDir + '/.output',
         apiHost: options.apiHost,
-        authToken: options.authToken,
+        authToken,
         release: options.release,
       })
 

@@ -2,9 +2,19 @@
 import { processSourceMaps } from '@getmonitor/cli'
 
 export interface GetMonitorNextOptions {
-  apiHost: string
   authToken?: string
   release?: string
+}
+
+/**
+ * @internal Test-only host override, intersected into `withGetMonitor`'s options but
+ * deliberately not part of the exported `GetMonitorNextOptions` type — see
+ * `@getmonitor/cli`'s `uploadSourceMap`'s `UploadSourceMapParams.apiHost`. The e2e suite
+ * writes this into a generated `next.config.js` (untyped, plain JS) to redirect delivery to
+ * its mock server; real Next.js configs must never set it.
+ */
+interface InternalTestOverrides {
+  apiHost?: string
 }
 
 // Minimal structural shapes for the subset of Next.js/webpack config this plugin touches —
@@ -35,7 +45,10 @@ interface WebpackCompiler {
   }
 }
 
-export function withGetMonitor(nextConfig: NextConfig, options: GetMonitorNextOptions): NextConfig {
+export function withGetMonitor(
+  nextConfig: NextConfig,
+  options: GetMonitorNextOptions & InternalTestOverrides
+): NextConfig {
   const previousWebpack = nextConfig.webpack
 
   return {
@@ -72,7 +85,7 @@ export function withGetMonitor(nextConfig: NextConfig, options: GetMonitorNextOp
   }
 }
 
-function createUploadPlugin(outputDirectory: string, options: GetMonitorNextOptions) {
+function createUploadPlugin(outputDirectory: string, options: GetMonitorNextOptions & InternalTestOverrides) {
   return {
     apply(compiler: WebpackCompiler) {
       compiler.hooks.afterEmit.tapPromise('GetMonitorSourceMapUpload', async () => {

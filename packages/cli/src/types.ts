@@ -4,7 +4,6 @@ export interface ProcessSourceMapsOptions {
   directory: string
   release?: string
   authToken?: string
-  apiHost: string
   fetchImpl?: typeof fetch
 }
 

@@ -23,13 +23,13 @@ function createFakeCompiler() {
 
 describe('withGetMonitor', () => {
   it('forces productionBrowserSourceMaps on', () => {
-    const config = withGetMonitor({}, { apiHost: 'https://ingest.test' })
+    const config = withGetMonitor({}, {})
     expect(config.productionBrowserSourceMaps).toBe(true)
   })
 
   it('preserves an existing webpack config callback', () => {
     const previousWebpack = vi.fn((cfg) => ({ ...cfg, marker: 'from-previous' }))
-    const config = withGetMonitor({ webpack: previousWebpack }, { apiHost: 'https://ingest.test' })
+    const config = withGetMonitor({ webpack: previousWebpack }, {})
 
     const result = config.webpack!({}, { isServer: false, dev: false })
 
@@ -38,13 +38,13 @@ describe('withGetMonitor', () => {
   })
 
   it('does not register an upload plugin in dev mode', () => {
-    const config = withGetMonitor({}, { apiHost: 'https://ingest.test' })
+    const config = withGetMonitor({}, {})
     const result = config.webpack!({}, { isServer: false, dev: true })
     expect(result.plugins ?? []).toEqual([])
   })
 
   it('registers an upload plugin in production builds', () => {
-    const config = withGetMonitor({}, { apiHost: 'https://ingest.test' })
+    const config = withGetMonitor({}, {})
     const result = config.webpack!({}, { isServer: false, dev: false })
     expect(result.plugins).toHaveLength(1)
   })
@@ -54,7 +54,7 @@ describe('withGetMonitor', () => {
     // compilation. Both server compilations report isServer: true and emit into .next/server —
     // only nextRuntime distinguishes the edge pass. Without excluding it, the Node server pass's
     // upload of .next/server would be redundantly repeated by the edge pass.
-    const config = withGetMonitor({}, { apiHost: 'https://ingest.test' })
+    const config = withGetMonitor({}, {})
     const result = config.webpack!({}, { isServer: true, dev: false, nextRuntime: 'edge' })
     expect(result.plugins ?? []).toEqual([])
   })
@@ -62,7 +62,7 @@ describe('withGetMonitor', () => {
   it('registers an upload plugin for the Node server compilation', () => {
     // isServer: true without nextRuntime (or with nextRuntime: 'nodejs') is the legitimate
     // server compilation pass — proves the edge-guard above doesn't also exclude this case.
-    const config = withGetMonitor({}, { apiHost: 'https://ingest.test' })
+    const config = withGetMonitor({}, {})
     const result = config.webpack!({}, { isServer: true, dev: false })
     expect(result.plugins).toHaveLength(1)
 
@@ -71,7 +71,7 @@ describe('withGetMonitor', () => {
   })
 
   it('uploads from .next/static for the client compilation', async () => {
-    const config = withGetMonitor({}, { apiHost: 'https://ingest.test' })
+    const config = withGetMonitor({}, {})
     const result = config.webpack!({}, { isServer: false, dev: false })
     const plugin = result.plugins![0] as { apply: (compiler: ReturnType<typeof createFakeCompiler>) => void }
     const compiler = createFakeCompiler()
@@ -83,7 +83,7 @@ describe('withGetMonitor', () => {
   })
 
   it('uploads from .next/server for the Node server compilation', async () => {
-    const config = withGetMonitor({}, { apiHost: 'https://ingest.test' })
+    const config = withGetMonitor({}, {})
     const result = config.webpack!({}, { isServer: true, dev: false })
     const plugin = result.plugins![0] as { apply: (compiler: ReturnType<typeof createFakeCompiler>) => void }
     const compiler = createFakeCompiler()
@@ -98,7 +98,7 @@ describe('withGetMonitor', () => {
     // Next.js's distDir option (common in monorepos/Docker setups) relocates the entire .next
     // output — the upload directory must follow it or processSourceMaps ENOENTs against a
     // hardcoded '.next/...' path that doesn't exist for these customers.
-    const config = withGetMonitor({ distDir: 'build' }, { apiHost: 'https://ingest.test' })
+    const config = withGetMonitor({ distDir: 'build' }, {})
 
     const clientResult = config.webpack!({}, { isServer: false, dev: false })
     const clientPlugin = clientResult.plugins![0] as {
@@ -122,7 +122,7 @@ describe('withGetMonitor', () => {
   it("fails the build when processSourceMaps reports failed uploads", async () => {
     processSourceMapsMock.mockResolvedValue({ uploaded: [], failed: ['static/chunks/main.js'] })
 
-    const config = withGetMonitor({}, { apiHost: 'https://ingest.test' })
+    const config = withGetMonitor({}, {})
     const result = config.webpack!({}, { isServer: false, dev: false })
     const plugin = result.plugins![0] as { apply: (compiler: ReturnType<typeof createFakeCompiler>) => void }
     const compiler = createFakeCompiler()
@@ -134,7 +134,7 @@ describe('withGetMonitor', () => {
   it('does not throw when processSourceMaps reports no failures', async () => {
     processSourceMapsMock.mockResolvedValue({ uploaded: ['static/chunks/main.js'], failed: [] })
 
-    const config = withGetMonitor({}, { apiHost: 'https://ingest.test' })
+    const config = withGetMonitor({}, {})
     const result = config.webpack!({}, { isServer: false, dev: false })
     const plugin = result.plugins![0] as { apply: (compiler: ReturnType<typeof createFakeCompiler>) => void }
     const compiler = createFakeCompiler()

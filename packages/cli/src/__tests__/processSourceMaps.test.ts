@@ -24,7 +24,6 @@ describe('processSourceMaps', () => {
       directory: dir,
       release: '1.0.0',
       authToken: 'secret',
-      apiHost: 'https://ingest.test',
       fetchImpl,
     })
 
@@ -43,7 +42,6 @@ describe('processSourceMaps', () => {
       directory: dir,
       release: '1.0.0',
       authToken: 'secret',
-      apiHost: 'https://ingest.test',
       fetchImpl,
     })
 
@@ -56,7 +54,7 @@ describe('processSourceMaps', () => {
     const originalJs = readFileSync(join(dir, 'main.js'), 'utf8')
 
     await expect(
-      processSourceMaps({ directory: dir, release: '1.0.0', apiHost: 'https://ingest.test' }),
+      processSourceMaps({ directory: dir, release: '1.0.0' }),
     ).rejects.toThrow(/auth token/i)
 
     expect(readFileSync(join(dir, 'main.js'), 'utf8')).toBe(originalJs)
@@ -77,7 +75,6 @@ describe('processSourceMaps', () => {
       directory: dir,
       release: '1.0.0',
       authToken: 'secret',
-      apiHost: 'https://ingest.test',
       fetchImpl,
     })
 
@@ -110,8 +107,7 @@ describe('processSourceMaps', () => {
         directory: dir,
         release: '1.0.0',
         authToken: 'secret',
-        apiHost: 'https://ingest.test',
-        fetchImpl,
+          fetchImpl,
       })
 
       // Must NOT be in `failed`: the upload already happened, so a caller retrying `failed`

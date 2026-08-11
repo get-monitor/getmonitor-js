@@ -8,12 +8,25 @@ import { resolveRelease } from './resolveRelease'
 import { uploadSourceMap } from './uploadSourceMap'
 import { ProcessSourceMapsOptions, ProcessSourceMapsResult } from './types'
 
+/**
+ * @internal Test-only host override, intersected into `processSourceMaps`'s options but
+ * deliberately not part of the exported `ProcessSourceMapsOptions` type — see
+ * `uploadSourceMap`'s `UploadSourceMapParams.apiHost`. Used by this package's own e2e suite
+ * and by nextjs-config/nuxt's e2e suites (via their own internal overrides) to redirect
+ * delivery to a local mock server; real callers must never set it.
+ */
+interface InternalTestOverrides {
+  apiHost?: string
+}
+
 /** Finds every JS/map artifact pair under `options.directory`, and for each one: injects a
  * debug ID, uploads the tagged source map, and — only on a successful upload — writes the
  * debug-ID-injected JS back to disk and deletes the `.map` file. An artifact whose upload
  * fails is left completely untouched on disk, so it can be retried by re-running this
  * function against the same directory. */
-export async function processSourceMaps(options: ProcessSourceMapsOptions): Promise<ProcessSourceMapsResult> {
+export async function processSourceMaps(
+  options: ProcessSourceMapsOptions & InternalTestOverrides
+): Promise<ProcessSourceMapsResult> {
   const authToken = options.authToken ?? process.env.GETMONITOR_AUTH_TOKEN
   if (!authToken) {
     throw new Error('Missing auth token. Pass --auth-token or set GETMONITOR_AUTH_TOKEN.')

@@ -14,7 +14,6 @@ npm install --save-dev @getmonitor/nuxt
 export default defineNuxtConfig({
   modules: ['@getmonitor/nuxt'],
   getmonitor: {
-    apiHost: 'https://ingest.getmonitor.com',
     authToken: process.env.GETMONITOR_AUTH_TOKEN,
     // release: '1.4.2', // optional — see @getmonitor/cli's README for auto-detection
   },
@@ -23,7 +22,8 @@ export default defineNuxtConfig({
 
 Uploads and strips source maps under `.output/` — both the client bundle (`.output/public`) and
 the Nitro server build (`.output/server`, including its `.mjs` chunks) — once `nuxt build`
-finishes. It's a no-op in `nuxt dev`.
+finishes. It's a no-op in `nuxt dev`, and also a no-op if no `authToken` (or `GETMONITOR_AUTH_TOKEN`
+env var) is configured — installing the module without setting one up doesn't break your build.
 
 Hooks into Nuxt's `close` lifecycle event, which fires only after `.output/` has been fully
 written by Nitro.
@@ -38,7 +38,8 @@ than shipping silently without maps uploaded.
 | --- | --- |
 | `default` (Nuxt module) | registered via `modules: ['@getmonitor/nuxt']` |
 
-`ModuleOptions` (the `getmonitor` config key) = `{ apiHost: string; authToken?: string; release?: string }`.
+`ModuleOptions` (the `getmonitor` config key) = `{ authToken?: string; release?: string }`. Uploads
+always go to the fixed GetMonitor ingest host — not customer-configurable.
 
 ## Development
 
