@@ -17,7 +17,7 @@ early in your app (before any component using `GetMonitorErrorBoundary` mounts):
 ```ts
 import { GetMonitor } from '@getmonitor/browser'
 
-GetMonitor.init('gm_xxx', { apiHost: 'https://ingest.getmonitor.com' })
+GetMonitor.init('gm_xxx', {})
 ```
 
 `GetMonitorErrorBoundary` does not have its own `init()` — it reports through the same
@@ -99,7 +99,6 @@ For most apps, the fix is to disable `captureConsoleErrors` when you initialize 
 
 ```ts
 GetMonitor.init('gm_xxx', {
-  apiHost: 'https://ingest.getmonitor.com',
   captureConsoleErrors: false,
 })
 ```

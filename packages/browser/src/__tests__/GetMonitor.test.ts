@@ -6,15 +6,15 @@ describe('GetMonitor (browser)', () => {
     vi.restoreAllMocks()
   })
 
-  it('sends a captureException call to the ingestion endpoint', async () => {
+  it('sends a captureException call to the fixed ingestion endpoint', async () => {
     const fetchSpy = vi.fn().mockResolvedValue({ ok: true, status: 200 })
     vi.stubGlobal('fetch', fetchSpy)
 
-    GetMonitor.init('gm_test', { apiHost: 'https://ingest.test' })
+    GetMonitor.init('gm_test', {})
     await GetMonitor.captureException(new TypeError('boom'))
 
     expect(fetchSpy).toHaveBeenCalledWith(
-      'https://ingest.test/api/v1/exceptions',
+      'http://ingest.getmonitor.io/api/v1/exceptions',
       expect.objectContaining({ method: 'POST' })
     )
     const body = JSON.parse(fetchSpy.mock.calls[0][1].body)
@@ -27,7 +27,7 @@ describe('GetMonitor (browser)', () => {
     const fetchSpy = vi.fn().mockResolvedValue({ ok: true, status: 200 })
     vi.stubGlobal('fetch', fetchSpy)
 
-    GetMonitor.init('gm_test', { apiHost: 'https://ingest.test' })
+    GetMonitor.init('gm_test', {})
     GetMonitor.identify('user_123', { email: 'a@example.com' })
     await GetMonitor.captureException(new Error('boom'))
 
@@ -39,7 +39,7 @@ describe('GetMonitor (browser)', () => {
     const fetchSpy = vi.fn().mockResolvedValue({ ok: true, status: 200 })
     vi.stubGlobal('fetch', fetchSpy)
 
-    GetMonitor.init('gm_test', { apiHost: 'https://ingest.test' })
+    GetMonitor.init('gm_test', {})
     GetMonitor.addBreadcrumb({ category: 'test', message: 'did a thing' })
     await GetMonitor.captureException(new Error('boom'))
 
@@ -51,7 +51,7 @@ describe('GetMonitor (browser)', () => {
     const fetchSpy = vi.fn().mockResolvedValue({ ok: true, status: 200 })
     vi.stubGlobal('fetch', fetchSpy)
 
-    GetMonitor.init('gm_test', { apiHost: 'https://ingest.test', ignoreErrors: ['TypeError'] })
+    GetMonitor.init('gm_test', { ignoreErrors: ['TypeError'] })
     await GetMonitor.captureException(new TypeError('boom'))
 
     expect(fetchSpy).not.toHaveBeenCalled()
@@ -61,7 +61,7 @@ describe('GetMonitor (browser)', () => {
     const fetchSpy = vi.fn().mockResolvedValue({ ok: true, status: 200 })
     vi.stubGlobal('fetch', fetchSpy)
 
-    GetMonitor.init('gm_test', { apiHost: 'https://ingest.test', rateLimit: { maxTokens: 1, refillIntervalMs: 10_000 } })
+    GetMonitor.init('gm_test', { rateLimit: { maxTokens: 1, refillIntervalMs: 10_000 } })
     await GetMonitor.captureException(new TypeError('a'))
     await GetMonitor.captureException(new TypeError('b'))
 
@@ -72,7 +72,7 @@ describe('GetMonitor (browser)', () => {
     const fetchSpy = vi.fn().mockResolvedValue({ ok: true, status: 200 })
     vi.stubGlobal('fetch', fetchSpy)
 
-    GetMonitor.init('gm_test', { apiHost: 'https://ingest.test', denyUrls: ['chrome-extension://'] })
+    GetMonitor.init('gm_test', { denyUrls: ['chrome-extension://'] })
     const error = new Error('boom')
     error.stack = 'Error: boom\n    at f (chrome-extension://abc/content.js:1:1)'
     await GetMonitor.captureException(error)
@@ -85,7 +85,6 @@ describe('GetMonitor (browser)', () => {
     vi.stubGlobal('fetch', fetchSpy)
 
     GetMonitor.init('gm_test', {
-      apiHost: 'https://ingest.test',
       beforeCapture: () => {
         throw new Error('customer bug')
       },
@@ -100,7 +99,6 @@ describe('GetMonitor (browser)', () => {
     vi.stubGlobal('fetch', fetchSpy)
 
     GetMonitor.init('gm_test', {
-      apiHost: 'https://ingest.test',
       denyUrls: ['chrome-extension://'],
       rateLimit: { maxTokens: 1, refillIntervalMs: 10_000 },
     })
@@ -121,7 +119,7 @@ describe('GetMonitor (browser)', () => {
     const fetchSpy = vi.fn().mockResolvedValue({ ok: false, status: 500 })
     vi.stubGlobal('fetch', fetchSpy)
 
-    GetMonitor.init('gm_test', { apiHost: 'https://ingest.test' })
+    GetMonitor.init('gm_test', {})
 
     await expect(GetMonitor.captureException(new Error('boom'))).resolves.toBeUndefined()
   })
@@ -130,7 +128,7 @@ describe('GetMonitor (browser)', () => {
     const fetchSpy = vi.fn().mockResolvedValue({ ok: true, status: 200 })
     vi.stubGlobal('fetch', fetchSpy)
 
-    GetMonitor.init('gm_test', { apiHost: 'https://ingest.test' })
+    GetMonitor.init('gm_test', {})
     await GetMonitor.captureAutomatic(new Error('boom'), 'react_error_boundary', true, {
       tags: { componentStack: 'at App' },
     })

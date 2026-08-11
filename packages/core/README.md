@@ -22,7 +22,7 @@ npm install @getmonitor/core
 | `applyFilters(event, options)` / `matchesIgnoreErrors` / `matchesUrlFilters` | `ignoreErrors` (string/RegExp match against type or message), `denyUrls`/`allowUrls` (match against stack-frame filenames — browser-only in practice), and a `beforeCapture` hook that can mutate the event or return `null` to drop it. Filters run in that order, and always *before* rate limiting, so a dropped event never consumes rate-limit budget. |
 | `TokenBucketRateLimiter` | Per-key (exception type) token bucket. Defaults: 10 tokens, refill 1/10s. Construct one per `GetMonitor` instance — it is not a process-global singleton. |
 | `BreadcrumbBuffer` | Count-capped ring buffer (default 20 entries, oldest dropped first). `add()`/`getAll()`/`clear()`. |
-| `HttpTransport` | Delivers events to `{apiHost}/api/v1/exceptions`. `send()` enqueues onto an in-memory retry queue (exponential backoff, 3 retries by default) and resolves once delivered or retries are exhausted; a failed send doesn't block subsequently queued sends. `sendImmediate()` sends inline with no queue and no retry — used where you need to guarantee delivery started before a process is allowed to exit. |
+| `HttpTransport` | Delivers events to `DEFAULT_API_HOST` + `/api/v1/exceptions` (`http://ingest.getmonitor.io` — fixed, not customer-configurable). `send()` enqueues onto an in-memory retry queue (exponential backoff, 3 retries by default) and resolves once delivered or retries are exhausted; a failed send doesn't block subsequently queued sends. `sendImmediate()` sends inline with no queue and no retry — used where you need to guarantee delivery started before a process is allowed to exit. |
 | `safeCapture(fn)` | Isolates a call site against both a synchronous throw and a rejected promise from `fn`, always resolving. Used everywhere the SDKs invoke their own instrumentation (`captureAutomatic`) or a customer-supplied hook (`beforeCapture`), so a bug in that code can never itself become a new uncaught exception or unhandled rejection. |
 | `generateEventId()` | `crypto.randomUUID()` where available (Node ≥19, evergreen browsers), with a fallback UUIDv4-shaped generator otherwise. |
 
@@ -31,7 +31,7 @@ npm install @getmonitor/core
 Both SDKs build and send the identical shape via `buildEvent` + `HttpTransport`:
 
 ```jsonc
-POST {apiHost}/api/v1/exceptions
+POST http://ingest.getmonitor.io/api/v1/exceptions
 Authorization: Bearer <public project key>
 Content-Type: application/json
 

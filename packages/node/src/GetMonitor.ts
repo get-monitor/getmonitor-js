@@ -20,6 +20,16 @@ export interface NodeInitOptions extends Omit<CoreConfig, 'apiKey'> {
   enableExceptionAutocapture?: boolean
 }
 
+/**
+ * @internal Test-only host override, intersected into the constructor's options but
+ * deliberately not part of the exported `NodeInitOptions` type — see `HttpTransport`'s
+ * `TransportConfig.apiHost`. The node e2e suite passes this to redirect delivery to its local
+ * mock ingest server; application code must never set it.
+ */
+interface InternalTestOverrides {
+  apiHost?: string
+}
+
 interface Identity {
   id: string
   traits?: Record<string, unknown>
@@ -34,7 +44,7 @@ export class GetMonitor {
   private globalIdentity: Identity | null = null
   private autoCaptureHandle: AutoCaptureHandle | null = null
 
-  constructor(apiKey: string, options: NodeInitOptions) {
+  constructor(apiKey: string, options: NodeInitOptions & InternalTestOverrides) {
     this.config = { apiKey, ...options }
     this.breadcrumbs = new BreadcrumbBuffer(options.maxBreadcrumbs)
     this.rateLimiter = new TokenBucketRateLimiter(options.rateLimit)

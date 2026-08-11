@@ -13,7 +13,7 @@ Or, without a bundler, load the UMD build directly:
 ```html
 <script src="https://unpkg.com/@getmonitor/browser/dist/index.umd.js"></script>
 <script>
-  GetMonitor.init('gm_xxx', { apiHost: 'https://ingest.getmonitor.com' })
+  GetMonitor.init('gm_xxx', {})
 </script>
 ```
 
@@ -23,7 +23,6 @@ Or, without a bundler, load the UMD build directly:
 import { GetMonitor } from '@getmonitor/browser'
 
 GetMonitor.init('gm_xxx', {
-  apiHost: 'https://ingest.getmonitor.com',
   environment: 'production',
   release: '1.4.2',
 })
@@ -51,7 +50,6 @@ Once `init()` is called, three sources are captured automatically, each independ
 
 ```ts
 GetMonitor.init('gm_xxx', {
-  apiHost: '...',
   captureConsoleErrors: false, // e.g. disable if console.error is used for non-error logging
 })
 ```
@@ -86,7 +84,6 @@ GetMonitor.addBreadcrumb({
 
 ```ts
 GetMonitor.init('gm_xxx', {
-  apiHost: '...',
   ignoreErrors: ['ResizeObserver loop limit exceeded', /^Network request failed/],
   denyUrls: [/extensions\//, 'chrome-extension://'],
   allowUrls: [/^https:\/\/app\.example\.com/],

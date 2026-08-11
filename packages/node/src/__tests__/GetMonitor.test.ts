@@ -12,7 +12,7 @@ describe('GetMonitor (node)', () => {
     const fetchImpl = vi.fn().mockResolvedValue({ ok: true, status: 200 })
     vi.stubGlobal('fetch', fetchImpl)
 
-    const gm = new GetMonitor('gm_test', { apiHost: 'https://ingest.test', enableExceptionAutocapture: false })
+    const gm = new GetMonitor('gm_test', { enableExceptionAutocapture: false })
     await gm.captureException(new TypeError('boom'))
 
     expect(fetchImpl).toHaveBeenCalledTimes(1)
@@ -26,7 +26,7 @@ describe('GetMonitor (node)', () => {
     const fetchImpl = vi.fn().mockResolvedValue({ ok: true, status: 200 })
     vi.stubGlobal('fetch', fetchImpl)
 
-    const gm = new GetMonitor('gm_test', { apiHost: 'https://ingest.test', enableExceptionAutocapture: false })
+    const gm = new GetMonitor('gm_test', { enableExceptionAutocapture: false })
     await gm.captureExceptionImmediate(new Error('boom'))
 
     expect(fetchImpl).toHaveBeenCalledTimes(1)
@@ -36,7 +36,7 @@ describe('GetMonitor (node)', () => {
     const fetchImpl = vi.fn().mockResolvedValue({ ok: false, status: 500 })
     vi.stubGlobal('fetch', fetchImpl)
 
-    const gm = new GetMonitor('gm_test', { apiHost: 'https://ingest.test', enableExceptionAutocapture: false })
+    const gm = new GetMonitor('gm_test', { enableExceptionAutocapture: false })
 
     await expect(gm.captureExceptionImmediate(new Error('boom'))).resolves.toBeUndefined()
   })
@@ -45,7 +45,7 @@ describe('GetMonitor (node)', () => {
     const fetchImpl = vi.fn().mockResolvedValue({ ok: true, status: 200 })
     vi.stubGlobal('fetch', fetchImpl)
 
-    const gm = new GetMonitor('gm_test', { apiHost: 'https://ingest.test', enableExceptionAutocapture: false })
+    const gm = new GetMonitor('gm_test', { enableExceptionAutocapture: false })
 
     await Promise.all([
       gm.runWithIdentity('user_a', async () => {
@@ -70,12 +70,10 @@ describe('GetMonitor (node)', () => {
     vi.stubGlobal('fetch', fetchImpl)
 
     const gmA = new GetMonitor('gm_a', {
-      apiHost: 'https://ingest.test',
       enableExceptionAutocapture: false,
       rateLimit: { maxTokens: 1, refillIntervalMs: 10_000 },
     })
     const gmB = new GetMonitor('gm_b', {
-      apiHost: 'https://ingest.test',
       enableExceptionAutocapture: false,
       rateLimit: { maxTokens: 1, refillIntervalMs: 10_000 },
     })
@@ -88,7 +86,7 @@ describe('GetMonitor (node)', () => {
   })
 
   it('enableExceptionAutocapture wires process-level hooks by default', () => {
-    const gm = new GetMonitor('gm_test', { apiHost: 'https://ingest.test' })
+    const gm = new GetMonitor('gm_test', {})
     expect(process.listenerCount('uncaughtException')).toBeGreaterThan(0)
     gm.shutdown()
     expect(process.listenerCount('uncaughtException')).toBe(0)
@@ -99,7 +97,6 @@ describe('GetMonitor (node)', () => {
     vi.stubGlobal('fetch', fetchImpl)
 
     const gm = new GetMonitor('gm_test', {
-      apiHost: 'https://ingest.test',
       enableExceptionAutocapture: false,
       beforeCapture: () => {
         throw new Error('customer bug')
@@ -115,7 +112,6 @@ describe('GetMonitor (node)', () => {
     vi.stubGlobal('fetch', fetchImpl)
 
     const gm = new GetMonitor('gm_test', {
-      apiHost: 'https://ingest.test',
       enableExceptionAutocapture: false,
       // Match on message, not type: the rate limiter buckets tokens per exception TYPE
       // (TokenBucketRateLimiter, keyed by `type`), so both events below are plain `Error`s

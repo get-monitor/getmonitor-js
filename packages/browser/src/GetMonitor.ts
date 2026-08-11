@@ -22,6 +22,16 @@ export interface BrowserInitOptions extends Omit<CoreConfig, 'apiKey'>, UrlFilte
   captureConsoleErrors?: boolean
 }
 
+/**
+ * @internal Test-only host override, intersected into `init`'s options but deliberately not
+ * part of the exported `BrowserInitOptions` type — see `HttpTransport`'s `TransportConfig.apiHost`.
+ * The browser e2e suite passes this through `window.GetMonitor.init(...)` to redirect delivery
+ * to its Playwright-controlled mock server; application code must never set it.
+ */
+interface InternalTestOverrides {
+  apiHost?: string
+}
+
 interface Identity {
   id: string
   traits?: Record<string, unknown>
@@ -36,7 +46,7 @@ class GetMonitorClient {
   private observerHandle: ExceptionObserverHandle | null = null
   private breadcrumbSourcesInstalled = false
 
-  init(apiKey: string, options: BrowserInitOptions): void {
+  init(apiKey: string, options: BrowserInitOptions & InternalTestOverrides): void {
     this.config = { apiKey, ...options }
     this.rateLimiter = new TokenBucketRateLimiter(options.rateLimit)
     this.transport = new HttpTransport({ apiHost: options.apiHost, apiKey })

@@ -10,7 +10,10 @@ const apiHost = new URLSearchParams(window.location.search).get('apiHost') ?? ''
 // react-dom's own console.error call (mechanism: 'console_error') and once by
 // GetMonitorErrorBoundary's explicit componentDidCatch report (mechanism:
 // 'react_error_boundary'). A real app using the error boundary would make the same call.
-GetMonitor.init('gm_e2e_test', { apiHost, captureConsoleErrors: false })
+// `apiHost` is an internal test-only override (see @getmonitor/browser's GetMonitor.ts /
+// InternalTestOverrides) used only by this e2e fixture to redirect delivery to Playwright's
+// mock server — deliberately not part of the public `BrowserInitOptions` type, hence the cast.
+GetMonitor.init('gm_e2e_test', { apiHost, captureConsoleErrors: false } as Parameters<typeof GetMonitor.init>[1])
 
 function Boom(): never {
   throw new Error('e2e boundary error')

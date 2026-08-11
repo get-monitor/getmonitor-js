@@ -1,5 +1,13 @@
+/** The one ingestion host every SDK instance talks to — not customer-configurable. */
+export const DEFAULT_API_HOST = 'http://ingest.getmonitor.io'
+
 export interface TransportConfig {
-  apiHost: string
+  /**
+   * @internal Test-only override for redirecting delivery to a local mock server (see the
+   * browser/node e2e suites). Never exposed through `GetMonitor.init`'s public options —
+   * application code always ships to {@link DEFAULT_API_HOST}.
+   */
+  apiHost?: string
   apiKey: string
   fetchImpl?: typeof fetch
   maxRetries?: number
@@ -15,7 +23,7 @@ export class HttpTransport {
   private queue: Promise<void> = Promise.resolve()
 
   constructor(config: TransportConfig) {
-    this.apiHost = config.apiHost
+    this.apiHost = config.apiHost ?? DEFAULT_API_HOST
     this.apiKey = config.apiKey
     // Must bind to globalThis: browsers' native fetch() throws "Illegal invocation" if it's
     // called with a `this` other than Window/WorkerGlobalScope, and `this.fetchImpl(...)`

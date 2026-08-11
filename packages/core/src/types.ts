@@ -71,7 +71,6 @@ export interface RateLimitOptions {
 
 export interface CoreConfig extends FilterOptions {
   apiKey: string
-  apiHost: string
   environment?: string
   release?: string
   rateLimit?: RateLimitOptions

@@ -16,7 +16,6 @@ Express support is a peer dependency, and optional — installing `express` is o
 import { GetMonitor } from '@getmonitor/node'
 
 const gm = new GetMonitor('gm_xxx', {
-  apiHost: 'https://ingest.getmonitor.com',
   environment: 'production',
   release: '1.4.2',
 })
@@ -49,7 +48,7 @@ app.use((req, res, next) => {
 `enableExceptionAutocapture` (default `true`) hooks `process.on('uncaughtException')` and `process.on('unhandledRejection')`:
 
 ```ts
-const gm = new GetMonitor('gm_xxx', { apiHost: '...', enableExceptionAutocapture: true })
+const gm = new GetMonitor('gm_xxx', { enableExceptionAutocapture: true })
 ```
 
 | Hook | Wire `mechanism` |

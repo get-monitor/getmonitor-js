@@ -1,7 +1,19 @@
 import { describe, it, expect, vi } from 'vitest'
-import { HttpTransport } from '../httpClient'
+import { HttpTransport, DEFAULT_API_HOST } from '../httpClient'
 
 describe('HttpTransport', () => {
+  it('defaults to DEFAULT_API_HOST when no apiHost override is given', async () => {
+    const fetchImpl = vi.fn().mockResolvedValue({ ok: true, status: 200 })
+    const transport = new HttpTransport({ apiKey: 'gm_test', fetchImpl })
+
+    await transport.sendImmediate({ eventId: '1' })
+
+    expect(fetchImpl).toHaveBeenCalledWith(
+      `${DEFAULT_API_HOST}/api/v1/exceptions`,
+      expect.objectContaining({ method: 'POST' })
+    )
+  })
+
   it('posts the event to /api/v1/exceptions with the bearer token', async () => {
     const fetchImpl = vi.fn().mockResolvedValue({ ok: true, status: 200 })
     const transport = new HttpTransport({ apiHost: 'https://ingest.test', apiKey: 'gm_test', fetchImpl })
