@@ -85,8 +85,8 @@ describe('GetMonitor (node)', () => {
     expect(fetchImpl).toHaveBeenCalledTimes(2)
   })
 
-  it('enableExceptionAutocapture wires process-level hooks by default', () => {
-    const gm = new GetMonitor('gm_test', {})
+  it('enableExceptionAutocapture wires process-level hooks by default (constructor called with no options)', () => {
+    const gm = new GetMonitor('gm_test')
     expect(process.listenerCount('uncaughtException')).toBeGreaterThan(0)
     gm.shutdown()
     expect(process.listenerCount('uncaughtException')).toBe(0)

@@ -29,7 +29,7 @@ npm install @getmonitor/browser
 ```ts
 import { GetMonitor } from '@getmonitor/browser'
 
-GetMonitor.init('gm_xxx', {})
+GetMonitor.init('gm_xxx')
 GetMonitor.captureException(new Error('something broke'))
 ```
 
@@ -40,7 +40,7 @@ npm install @getmonitor/node
 ```ts
 import { GetMonitor } from '@getmonitor/node'
 
-const gm = new GetMonitor('gm_xxx', {})
+const gm = new GetMonitor('gm_xxx')
 gm.captureException(new Error('something broke'))
 ```
 

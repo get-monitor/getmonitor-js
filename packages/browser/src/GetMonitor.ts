@@ -46,7 +46,7 @@ class GetMonitorClient {
   private observerHandle: ExceptionObserverHandle | null = null
   private breadcrumbSourcesInstalled = false
 
-  init(apiKey: string, options: BrowserInitOptions & InternalTestOverrides): void {
+  init(apiKey: string, options: BrowserInitOptions & InternalTestOverrides = {}): void {
     this.config = { apiKey, ...options }
     this.rateLimiter = new TokenBucketRateLimiter(options.rateLimit)
     this.transport = new HttpTransport({ apiHost: options.apiHost, apiKey })

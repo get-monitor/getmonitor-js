@@ -6,11 +6,11 @@ describe('GetMonitor (browser)', () => {
     vi.restoreAllMocks()
   })
 
-  it('sends a captureException call to the fixed ingestion endpoint', async () => {
+  it('sends a captureException call to the fixed ingestion endpoint (init called with no options)', async () => {
     const fetchSpy = vi.fn().mockResolvedValue({ ok: true, status: 200 })
     vi.stubGlobal('fetch', fetchSpy)
 
-    GetMonitor.init('gm_test', {})
+    GetMonitor.init('gm_test')
     await GetMonitor.captureException(new TypeError('boom'))
 
     expect(fetchSpy).toHaveBeenCalledWith(

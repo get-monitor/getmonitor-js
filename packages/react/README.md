@@ -17,7 +17,7 @@ early in your app (before any component using `GetMonitorErrorBoundary` mounts):
 ```ts
 import { GetMonitor } from '@getmonitor/browser'
 
-GetMonitor.init('gm_xxx', {})
+GetMonitor.init('gm_xxx')
 ```
 
 `GetMonitorErrorBoundary` does not have its own `init()` — it reports through the same

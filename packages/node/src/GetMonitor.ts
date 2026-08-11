@@ -44,7 +44,7 @@ export class GetMonitor {
   private globalIdentity: Identity | null = null
   private autoCaptureHandle: AutoCaptureHandle | null = null
 
-  constructor(apiKey: string, options: NodeInitOptions & InternalTestOverrides) {
+  constructor(apiKey: string, options: NodeInitOptions & InternalTestOverrides = {}) {
     this.config = { apiKey, ...options }
     this.breadcrumbs = new BreadcrumbBuffer(options.maxBreadcrumbs)
     this.rateLimiter = new TokenBucketRateLimiter(options.rateLimit)

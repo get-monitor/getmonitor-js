@@ -13,7 +13,7 @@ Or, without a bundler, load the UMD build directly:
 ```html
 <script src="https://unpkg.com/@getmonitor/browser/dist/index.umd.js"></script>
 <script>
-  GetMonitor.init('gm_xxx', {})
+  GetMonitor.init('gm_xxx')
 </script>
 ```
 
