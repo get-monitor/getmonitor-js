@@ -10,6 +10,7 @@
     "lint": "turbo run lint"
   },
   "devDependencies": {
+    "@changesets/changelog-github": "^1.0.0",
     "@changesets/cli": "^3.0.0",
     "turbo": "^2.3.0",
     "typescript": "^5.8.2"
