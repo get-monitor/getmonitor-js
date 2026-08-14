@@ -50,7 +50,7 @@ See each package's own README for the full API, configuration options, and frame
 
 Both SDKs are thin, platform-specific shells around `@getmonitor/core`, which owns everything that doesn't differ between a browser tab and a Node process: the event schema, stack trace parsing, error normalization (cause chains, `AggregateError`), fingerprinting, `ignoreErrors`/`beforeCapture` filtering, the per-exception-type rate limiter, and the retrying HTTP transport. `@getmonitor/browser` and `@getmonitor/node` each add only what's genuinely platform-specific: how exceptions are observed (`window.onerror` vs. `process.on('uncaughtException')`), how user identity is scoped (a page-level singleton vs. `AsyncLocalStorage`-scoped per request), and how breadcrumbs are auto-recorded (console/nav/click vs. manual-only).
 
-Every captured exception is POSTed as a single JSON event to `http://ingest.getmonitor.io/api/v1/exceptions` — the ingestion host is fixed and not customer-configurable — authenticated with a public, write-only project key (`gm_xxx`) — safe to ship inside a browser bundle, the same trust model as a Sentry DSN or PostHog project key. The full wire schema is documented in [`@getmonitor/core`](packages/core#event-schema).
+Every captured exception is POSTed as a single JSON event to `https://ingest.getmonitor.io/api/v1/exceptions` — the ingestion host is fixed and not customer-configurable — authenticated with a public, write-only project key (`gm_xxx`) — safe to ship inside a browser bundle, the same trust model as a Sentry DSN or PostHog project key. The full wire schema is documented in [`@getmonitor/core`](packages/core#event-schema).
 
 ## Development
 

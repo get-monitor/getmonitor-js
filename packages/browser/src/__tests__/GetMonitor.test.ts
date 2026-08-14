@@ -14,7 +14,7 @@ describe('GetMonitor (browser)', () => {
     await GetMonitor.captureException(new TypeError('boom'))
 
     expect(fetchSpy).toHaveBeenCalledWith(
-      'http://ingest.getmonitor.io/api/v1/exceptions',
+      'https://ingest.getmonitor.io/api/v1/exceptions',
       expect.objectContaining({ method: 'POST' })
     )
     const body = JSON.parse(fetchSpy.mock.calls[0][1].body)

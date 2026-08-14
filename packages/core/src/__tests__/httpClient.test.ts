@@ -2,6 +2,10 @@ import { describe, it, expect, vi } from 'vitest'
 import { HttpTransport, DEFAULT_API_HOST } from '../httpClient'
 
 describe('HttpTransport', () => {
+  it('DEFAULT_API_HOST uses https, never plain http', () => {
+    expect(DEFAULT_API_HOST).toMatch(/^https:\/\//)
+  })
+
   it('defaults to DEFAULT_API_HOST when no apiHost override is given', async () => {
     const fetchImpl = vi.fn().mockResolvedValue({ ok: true, status: 200 })
     const transport = new HttpTransport({ apiKey: 'gm_test', fetchImpl })
