@@ -1,5 +1,16 @@
 # @getmonitor/nuxt
 
+## 0.3.0
+
+### Minor Changes
+
+- stable version
+
+### Patch Changes
+
+- Updated dependencies [`c57b8a8`]:
+  - @getmonitor/cli@0.3.0
+
 ## 0.2.0
 
 ### Minor Changes

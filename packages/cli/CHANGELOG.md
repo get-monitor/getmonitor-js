@@ -1,5 +1,11 @@
 # @getmonitor/cli
 
+## 0.3.0
+
+### Minor Changes
+
+- stable version
+
 ## 0.2.0
 
 ### Minor Changes
