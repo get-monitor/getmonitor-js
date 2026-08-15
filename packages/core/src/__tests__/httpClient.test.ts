@@ -18,7 +18,7 @@ describe('HttpTransport', () => {
     )
   })
 
-  it('posts the event to /api/v1/exceptions with the bearer token', async () => {
+  it('posts the event to /api/v1/exceptions with the project key header', async () => {
     const fetchImpl = vi.fn().mockResolvedValue({ ok: true, status: 200 })
     const transport = new HttpTransport({ apiHost: 'https://ingest.test', apiKey: 'gm_test', fetchImpl })
 
@@ -28,7 +28,7 @@ describe('HttpTransport', () => {
       'https://ingest.test/api/v1/exceptions',
       expect.objectContaining({
         method: 'POST',
-        headers: expect.objectContaining({ Authorization: 'Bearer gm_test' }),
+        headers: expect.objectContaining({ 'X-GetMonitor-Project-Key': 'gm_test' }),
         body: JSON.stringify({ eventId: '1' }),
       })
     )

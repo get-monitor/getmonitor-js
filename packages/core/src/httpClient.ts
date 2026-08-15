@@ -73,7 +73,7 @@ export class HttpTransport {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${this.apiKey}`,
+        'X-GetMonitor-Project-Key': this.apiKey,
       },
       body: JSON.stringify(event),
     })

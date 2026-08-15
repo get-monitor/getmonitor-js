@@ -32,7 +32,7 @@ Both SDKs build and send the identical shape via `buildEvent` + `HttpTransport`:
 
 ```jsonc
 POST https://ingest.getmonitor.io/api/v1/exceptions
-Authorization: Bearer <public project key>
+X-GetMonitor-Project-Key: <public project key>
 Content-Type: application/json
 
 {
