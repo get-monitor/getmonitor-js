@@ -1,5 +1,11 @@
 # @getmonitor/core
 
+## 0.3.1
+
+### Patch Changes
+
+- Fix exception ingest to send `X-GetMonitor-Project-Key` instead of `Authorization: Bearer`, matching the header ingester-api's deployed endpoint actually reads. Every exception sent by a previously-published version of this SDK was being rejected with 401 and never reached ingestion.
+
 ## 0.3.0
 
 ### Minor Changes
