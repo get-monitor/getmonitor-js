@@ -63,7 +63,12 @@ export async function processSourceMaps(
         mapContent: injected.map,
         fetchImpl: options.fetchImpl,
       })
-    } catch {
+    } catch (error) {
+      // Surfaced here rather than swallowed: this is the only place the actual failure reason
+      // (injectDebugId's malformed-JSON error, or uploadSourceMap's `status statusText` message)
+      // is available. Without logging it, callers only ever see a bare list of failed paths with
+      // no way to tell an auth failure from a malformed map from a network error.
+      console.error(`Failed to process ${artifact.jsPath}:`, error instanceof Error ? error.message : error)
       result.failed.push(artifact.jsPath)
       continue
     }
