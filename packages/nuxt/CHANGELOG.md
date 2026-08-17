@@ -1,5 +1,12 @@
 # @getmonitor/nuxt
 
+## 0.3.1
+
+### Patch Changes
+
+- Updated dependencies [[`ad10c6f`](https://github.com/get-monitor/getmonitor-js/commit/ad10c6fb032ade4cd9d06fb32452c022f19ff030)]:
+  - @getmonitor/cli@0.3.1
+
 ## 0.3.0
 
 ### Minor Changes
