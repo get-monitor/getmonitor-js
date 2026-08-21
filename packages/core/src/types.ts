@@ -5,6 +5,10 @@ export type ExceptionMechanism =
   | 'manual'
   | 'react_error_boundary'
   | 'express_middleware'
+  | 'fastify_hook'
+  | 'koa_error_handler'
+  | 'hono_error_handler'
+  | 'nestjs_filter'
 
 export interface StackFrame {
   filename: string
