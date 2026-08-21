@@ -22,12 +22,14 @@
   "peerDependencies": {
     "express": ">=4",
     "fastify": ">=4",
-    "koa": ">=2"
+    "koa": ">=2",
+    "hono": ">=4"
   },
   "peerDependenciesMeta": {
     "express": { "optional": true },
     "fastify": { "optional": true },
-    "koa": { "optional": true }
+    "koa": { "optional": true },
+    "hono": { "optional": true }
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.6",
@@ -37,6 +39,7 @@
     "@types/supertest": "^6.0.2",
     "express": "^4.21.0",
     "fastify": "^5.12.1",
+    "hono": "^4.13.3",
     "koa": "^3.2.1",
     "rollup": "^4.24.0",
     "supertest": "^7.0.0",
