@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import express from 'express'
 import request from 'supertest'
-import { setupExpressErrorHandler } from '../expressMiddleware'
+import { setupExpressErrorHandler } from '../extensions/express'
 
 describe('setupExpressErrorHandler', () => {
   it('captures errors thrown in a route handler as express_middleware', async () => {
