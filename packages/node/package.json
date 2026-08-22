@@ -26,7 +26,7 @@
     "build": "rollup -c",
     "test": "vitest run --exclude 'e2e/**'",
     "test:e2e": "vitest run e2e/exceptionCapture.spec.ts",
-    "lint": "tsc --noEmit && tsc --noEmit -p e2e"
+    "lint": "tsc --noEmit && tsc --noEmit -p tsconfig.nestjs.json && tsc --noEmit -p e2e"
   },
   "dependencies": {
     "@getmonitor/core": "workspace:*"
