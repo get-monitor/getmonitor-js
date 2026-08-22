@@ -1,5 +1,12 @@
 # @getmonitor/browser
 
+## 0.3.2
+
+### Patch Changes
+
+- Updated dependencies [[`34ae448`](https://github.com/get-monitor/getmonitor-js/commit/34ae448e4be79ec187d504a105ed27fbc0ddc73b)]:
+  - @getmonitor/core@0.4.0
+
 ## 0.3.1
 
 ### Patch Changes
