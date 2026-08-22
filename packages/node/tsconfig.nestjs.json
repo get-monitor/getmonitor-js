@@ -4,5 +4,6 @@
     "rootDir": "src/extensions",
     "composite": false
   },
-  "include": ["src/extensions/nestjs.ts"]
+  "include": ["src/extensions/nestjs.ts"],
+  "exclude": []
 }
