@@ -1,6 +1,6 @@
 # @getmonitor/node
 
-Node.js error-tracking SDK for GetMonitor. Automatically captures `uncaughtException`/`unhandledRejection`, provides an Express error-handling middleware, and supports manual capture, breadcrumbs, and per-request identity scoping via `AsyncLocalStorage`.
+Node.js error-tracking SDK for GetMonitor. Automatically captures `uncaughtException`/`unhandledRejection`, provides error-handling integrations for Express, Fastify, Koa, Hono, and NestJS, and supports manual capture, breadcrumbs, and per-request identity scoping via `AsyncLocalStorage`.
 
 ## Installation
 
@@ -8,7 +8,7 @@ Node.js error-tracking SDK for GetMonitor. Automatically captures `uncaughtExcep
 npm install @getmonitor/node
 ```
 
-Express support is a peer dependency, and optional — installing `express` is only required if you use `setupExpressErrorHandler`.
+Framework support (Express, Fastify, Koa, Hono, NestJS) is provided via optional peer dependencies — install only the framework you use. See [Framework integrations](#framework-integrations).
 
 ## Quickstart
 
@@ -68,7 +68,11 @@ await gm.captureExceptionImmediate(error) // e.g. in a serverless/edge handler
 - **`captureException`** enqueues onto an in-memory retry queue and returns once delivered or retries are exhausted; code that doesn't `await` it isn't blocked on delivery.
 - **`captureExceptionImmediate`** sends inline, no queue, no retry — its promise resolves only when that single HTTP request completes. Use this wherever the process might exit right after the call returns (serverless functions, edge handlers, short-lived scripts) — it's the same mechanism the auto-capture hooks use internally to guarantee delivery isn't dropped on shutdown.
 
-## Express integration
+## Framework integrations
+
+All five are optional peer dependencies — only install the framework you use. Each captures with `handled: true` and never blocks or delays the framework's own response on the ingest network round-trip (fire-and-forget, using the same `safeCapture` isolation as automatic capture).
+
+### Express
 
 ```ts
 import express from 'express'
@@ -80,7 +84,62 @@ const app = express()
 setupExpressErrorHandler(gm, app) // register after routes, before your own error handlers
 ```
 
-Express only reaches error-handling (4-arg) middleware registered *after* the route/middleware that threw, so `setupExpressErrorHandler` must come after your routes. It captures with `mechanism: 'express_middleware'`, `handled: true`, then calls `next(err)` so your own error handlers still run afterward.
+Express only reaches error-handling (4-arg) middleware registered *after* the route/middleware that threw, so `setupExpressErrorHandler` must come after your routes. Captures with `mechanism: 'express_middleware'`, then calls `next(err)` so your own error handlers still run afterward.
+
+### Fastify
+
+```ts
+import Fastify from 'fastify'
+import { setupFastifyErrorHandler } from '@getmonitor/node'
+
+const app = Fastify()
+setupFastifyErrorHandler(gm, app)
+```
+
+Uses Fastify's `onError` lifecycle hook, which runs without altering Fastify's own default error response. Captures with `mechanism: 'fastify_hook'`.
+
+### Koa
+
+```ts
+import Koa from 'koa'
+import { setupKoaErrorHandler } from '@getmonitor/node'
+
+const app = new Koa()
+setupKoaErrorHandler(gm, app)
+```
+
+Listens on Koa's `app.on('error', ...)`, which Koa's own context error handler emits before it sets headers/status and calls `res.end()` — since the handler only observes and never touches `ctx.status`/`ctx.body`/the response itself, this can't affect what Koa ultimately sends. Captures with `mechanism: 'koa_error_handler'`.
+
+### Hono
+
+```ts
+import { Hono } from 'hono'
+import { setupHonoErrorHandler } from '@getmonitor/node'
+
+const app = new Hono()
+setupHonoErrorHandler(gm, app)
+// Or with a custom response:
+setupHonoErrorHandler(gm, app, {
+  onError: (error, c) => c.json({ message: 'Something went wrong' }, 500),
+})
+```
+
+Unlike the three above, Hono's `onError` handler's return value **is** the HTTP response — there's no default response already sent to observe after the fact. Without an `onError` option, this responds with a plain `500 Internal Server Error` text response (matching Hono's own built-in default). Captures with `mechanism: 'hono_error_handler'`.
+
+### NestJS
+
+NestJS support ships from a separate subpath, `@getmonitor/node/nestjs`, not the main package entry — this keeps `@nestjs/common`/`@nestjs/core` from being pulled in for every other framework's consumers.
+
+```ts
+import { HttpAdapterHost } from '@nestjs/core'
+import { GetMonitorExceptionFilter } from '@getmonitor/node/nestjs'
+
+const app = await NestFactory.create(AppModule)
+const { httpAdapter } = app.get(HttpAdapterHost)
+app.useGlobalFilters(new GetMonitorExceptionFilter(gm, httpAdapter))
+```
+
+Passing `httpAdapter` is required — this follows Nest's own documented "catch everything" pattern for a manually-constructed global filter (a filter built with `new`, rather than registered as a DI provider, isn't wired up by Nest's dependency injection, so `httpAdapter` must be provided explicitly). `GetMonitorExceptionFilter` extends `BaseExceptionFilter` and delegates to it after capturing, so Nest's normal HTTP response formatting is preserved. Captures with `mechanism: 'nestjs_filter'`.
 
 ## Breadcrumbs
 
@@ -114,6 +173,10 @@ Call this if you construct a `GetMonitor` instance with a lifetime shorter than 
 | `.addBreadcrumb(breadcrumb)` | `({ category, message, data?, level? }) => void` |
 | `.shutdown()` | `() => void` |
 | `setupExpressErrorHandler(gm, app)` | `(GetMonitor, express.Application) => void` |
+| `setupFastifyErrorHandler(gm, app)` | `(GetMonitor, FastifyInstance) => void` |
+| `setupKoaErrorHandler(gm, app)` | `(GetMonitor, Koa) => void` |
+| `setupHonoErrorHandler(gm, app, options?)` | `(GetMonitor, Hono, HonoErrorHandlerOptions?) => void` |
+| `new GetMonitorExceptionFilter(gm, httpAdapter?)` (from `@getmonitor/node/nestjs`) | `(GetMonitor, HttpServer?) => GetMonitorExceptionFilter` |
 
 `NodeInitOptions` = `CoreConfig` (minus `apiKey`, passed separately) + `enableExceptionAutocapture`. See [`@getmonitor/core`](../core) for `CoreConfig`, `CaptureOptions`, and the full event schema.
 
