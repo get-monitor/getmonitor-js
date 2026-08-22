@@ -1,5 +1,11 @@
 # @getmonitor/node
 
+## 0.4.1
+
+### Patch Changes
+
+- Fix the 0.4.0 publish, which shipped a stale `dist/` missing the CJS build, the `./nestjs` subpath export, and all TypeScript declarations. A leftover `tsconfig.tsbuildinfo` from a prior build was suppressing declaration emission on the main entry, and the last publish ran without a clean rebuild first. Added a `prepublishOnly` script that always does a clean rebuild before publishing.
+
 ## 0.4.0
 
 ### Minor Changes

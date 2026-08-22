@@ -1,6 +1,6 @@
 {
   "name": "@getmonitor/node",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "license": "Apache-2.0",
   "type": "module",
   "main": "dist/index.cjs",
@@ -24,6 +24,7 @@
   },
   "scripts": {
     "build": "rollup -c",
+    "prepublishOnly": "rm -rf dist tsconfig.tsbuildinfo && pnpm build",
     "test": "vitest run --exclude 'e2e/**'",
     "test:e2e": "vitest run e2e/exceptionCapture.spec.ts",
     "lint": "tsc --noEmit && tsc --noEmit -p tsconfig.nestjs.json && tsc --noEmit -p e2e"
