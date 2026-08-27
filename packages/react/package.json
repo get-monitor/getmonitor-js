@@ -11,6 +11,7 @@
   },
   "files": ["dist"],
   "scripts": {
+    "prepublishOnly": "rm -rf dist tsconfig.tsbuildinfo && pnpm build",
     "build": "rollup -c",
     "test": "vitest run",
     "test:e2e": "playwright test",

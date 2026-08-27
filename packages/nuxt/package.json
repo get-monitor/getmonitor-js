@@ -11,6 +11,7 @@
     "access": "public"
   },
   "scripts": {
+    "prepublishOnly": "rm -rf dist tsconfig.tsbuildinfo && pnpm build",
     "build": "rollup -c",
     "test:e2e": "vitest run e2e/build.spec.ts",
     "lint": "tsc --noEmit && tsc --noEmit -p e2e"
