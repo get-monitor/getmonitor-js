@@ -14,6 +14,7 @@
     "access": "public"
   },
   "scripts": {
+    "prepack": "pnpm build",
     "build": "rollup -c && chmod +x dist/bin.js",
     "test": "vitest run --exclude 'e2e/**'",
     "test:e2e": "vitest run e2e/processSourceMaps.spec.ts",
