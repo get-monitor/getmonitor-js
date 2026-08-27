@@ -1,5 +1,11 @@
 # @getmonitor/cli
 
+## 0.3.3
+
+### Patch Changes
+
+- Republish with the actual build output included. 0.3.2 was published with an empty `dist/` (no `bin.js`, no `index.js`/`.cjs`, no type declarations) because nothing forced a build to run before publish — this version adds a `prepublishOnly` script so it can't happen again.
+
 ## 0.3.2
 
 ### Patch Changes
