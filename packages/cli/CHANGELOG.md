@@ -1,5 +1,11 @@
 # @getmonitor/cli
 
+## 0.3.2
+
+### Patch Changes
+
+- [`87e6b7e`](https://github.com/get-monitor/getmonitor-js/commit/87e6b7ebf9976a03218c4acbfc854b048f3472ba) Thanks [@washingtonserip](https://github.com/washingtonserip)! - Upload source map artifacts concurrently (bounded to 20 in flight) instead of one at a time. `processSourceMaps` previously awaited each upload serially, so a build with over a thousand artifacts spent minutes waiting on per-file network round trips one after another. `result.uploaded`/`result.failed` still come back in the same deterministic (discovery) order regardless of which upload finishes first.
+
 ## 0.3.1
 
 ### Patch Changes
