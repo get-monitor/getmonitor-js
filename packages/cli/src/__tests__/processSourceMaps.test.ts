@@ -91,6 +91,42 @@ describe('processSourceMaps', () => {
     expect(fetchImpl).toHaveBeenCalledTimes(1)
   })
 
+  it('uploads artifacts concurrently while keeping `uploaded`/`failed` in discovery order', async () => {
+    // A second artifact whose upload is deliberately slower than the first's, so completion
+    // order (second finishes before first) diverges from discovery order (first, then second) —
+    // proving the result lists reflect discovery order, not whichever worker finished first.
+    writeFileSync(join(dir, 'other.js'), 'console.log(2)\n//# sourceMappingURL=other.js.map')
+    writeFileSync(join(dir, 'other.js.map'), '{"version":3}')
+
+    const callOrder: string[] = []
+    const fetchImpl = vi.fn().mockImplementation(async (_url, init) => {
+      const body = init.body as FormData
+      const filename = body.get('filename') as string
+      callOrder.push(filename)
+      if (filename === 'main.js') {
+        // Resolves after other.js's upload below, so main.js is the slower of the two.
+        await new Promise((resolve) => setTimeout(resolve, 20))
+      }
+      return { ok: true, status: 200, statusText: 'OK' }
+    })
+
+    const result = await processSourceMaps({
+      directory: dir,
+      release: '1.0.0',
+      authToken: 'secret',
+      fetchImpl,
+    })
+
+    // Both fetches were in flight concurrently: other.js's fetch fired, and resolved, before
+    // main.js's slower one resolved.
+    expect(callOrder).toEqual(['main.js', 'other.js'])
+    // Yet the result is still in discovery order (main.js, then other.js), not completion order.
+    expect(result).toEqual({
+      uploaded: [join(dir, 'main.js'), join(dir, 'other.js')],
+      failed: [],
+    })
+  })
+
   it('still reports the artifact as `uploaded` when the post-upload local cleanup fails', async () => {
     const fetchImpl = vi.fn().mockResolvedValue({ ok: true, status: 200, statusText: 'OK' })
 
