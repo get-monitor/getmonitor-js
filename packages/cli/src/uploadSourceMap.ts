@@ -1,7 +1,7 @@
 // packages/cli/src/uploadSourceMap.ts
 
 /** The one sourcemap-upload host every CLI invocation talks to — not customer-configurable. */
-export const DEFAULT_API_HOST = 'https://ingest.getmonitor.io'
+export const DEFAULT_API_HOST = 'https://track.getmonitor.io'
 
 export interface UploadSourceMapParams {
   /**

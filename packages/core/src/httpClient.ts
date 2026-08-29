@@ -1,5 +1,5 @@
 /** The one ingestion host every SDK instance talks to — not customer-configurable. */
-export const DEFAULT_API_HOST = 'https://ingest.getmonitor.io'
+export const DEFAULT_API_HOST = 'https://track.getmonitor.io'
 
 export interface TransportConfig {
   /**

@@ -9,7 +9,7 @@ as part of a customer's build.
 For every `*.js` file with a resolvable source map under a directory, `processSourceMaps`:
 
 1. Generates a debug ID and injects it into both the JS file and its source map.
-2. Uploads the tagged source map to `https://ingest.getmonitor.io/api/v1/sourcemaps` — the
+2. Uploads the tagged source map to `https://track.getmonitor.io/api/v1/sourcemaps` — the
    upload host is fixed and not customer-configurable.
 3. On a successful upload: deletes the `.map` file and strips the `//# sourceMappingURL=`
    comment from the JS file, so nothing readable ships publicly.
