@@ -1,5 +1,11 @@
 # @getmonitor/core
 
+## 0.4.1
+
+### Patch Changes
+
+- Update default API host to track.getmonitor.io
+
 ## 0.4.0
 
 ### Minor Changes

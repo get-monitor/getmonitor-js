@@ -1,5 +1,11 @@
 # @getmonitor/cli
 
+## 0.3.4
+
+### Patch Changes
+
+- Update default API host to track.getmonitor.io
+
 ## 0.3.3
 
 ### Patch Changes

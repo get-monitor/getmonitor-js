@@ -1,5 +1,13 @@
 # @getmonitor/react
 
+## 0.3.3
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @getmonitor/core@0.4.1
+  - @getmonitor/browser@0.3.3
+
 ## 0.3.2
 
 ### Patch Changes
