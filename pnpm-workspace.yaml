@@ -1,3 +1,7 @@
 packages:
-  - 'packages/*'
-  - 'packages/react/e2e/fixtures/app'
+  - packages/*
+  - packages/react/e2e/fixtures/app
+
+onlyBuiltDependencies:
+  - esbuild
+  - sharp
